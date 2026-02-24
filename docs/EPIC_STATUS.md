@@ -3,8 +3,8 @@
 ## EPIC 2 (implemented)
 
 - Domain enums:
-  - `App\\Enums\\EmployeeStatus`
-  - `App\\Enums\\VacationRequestStatus`
+  - `App\Enums\EmployeeStatus`
+  - `App\Enums\VacationRequestStatus`
 - Domain schema migrations:
   - `departments`
   - `employees`
@@ -14,6 +14,20 @@
   - `Department`, `Employee`, `VacationRequest`, `VacationBalanceAdjustment`
 - Domain factories and schema tests:
   - `tests/Feature/Database/VacationDomainSchemaTest.php`
+
+## EPIC 3 (implemented)
+
+- Employee resource routes and controller:
+  - `App\Http\Controllers\EmployeeController`
+- Employee Form Requests:
+  - `App\Http\Requests\StoreEmployeeRequest`
+  - `App\Http\Requests\UpdateEmployeeRequest`
+- AdminLTE Blade views for employee CRUD:
+  - `resources/views/employees/*`
+- Employee navigation entry in sidebar:
+  - `resources/views/layouts/app.blade.php`
+- Feature tests for employee CRUD and permissions:
+  - `tests/Feature/Employees/EmployeeCrudTest.php`
 
 ## Why this file exists
 
