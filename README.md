@@ -1,51 +1,44 @@
 # Sistema de Programação de Férias
 
-Sistema web em Laravel para programação, aprovação e acompanhamento de férias, com foco em entrega incremental e governança de dados.
+Base inicial do projeto em **Laravel 12 + Breeze (Blade)** com layout administrativo em **AdminLTE**, mantendo **TailwindCSS** para componentes específicos.
 
-## Stack
+## Stack do MVP
 
 - Laravel 12.x
+- PHP 8.4+
+- MySQL (produção) / SQLite (local rápido)
 - Blade + Alpine.js
 - AdminLTE (layout principal)
-- TailwindCSS (componentes específicos)
-- MySQL (produção) / SQLite (dev rápido)
+- TailwindCSS (componentes isolados)
 
-## Progresso por épico
+## Estado atual (EPIC 1)
 
-### ✅ EPIC 1 — Setup & Fundação
+- Projeto Laravel criado e pronto para desenvolvimento.
+- Autenticação Breeze instalada (login, registro, perfil, reset de senha).
+- Layout `x-app-layout` migrado para estrutura AdminLTE.
+- Componentes Blade reutilizáveis adicionados:
+  - `x-ui.card`
+  - `x-ui.badge`
+  - `x-ui.button`
+  - `x-ui.table`
+- Dashboard inicial ajustado para usar os componentes e servir como base das próximas métricas.
 
-- Projeto Laravel + Breeze (Blade)
-- Layout base AdminLTE
-- Componentes Blade reutilizáveis (`x-ui.card`, `x-ui.badge`, `x-ui.button`, `x-ui.table`)
+## Próximos passos recomendados
 
-### ✅ EPIC 2 — Modelagem de Banco (fase 1)
+1. Modelagem de banco (`departments`, `employees`, `vacation_requests`, `vacation_balance_adjustments`).
+2. Definir policy de ajuste manual de saldo e trilha de auditoria obrigatória.
+3. Criar enum de status e actions de workflow (`approve/reject/review`).
+4. Evoluir dashboard para métricas reais por query dedicada.
 
-- Migrations criadas para:
-  - `departments`
-  - `employees`
-  - `vacation_requests`
-  - `vacation_balance_adjustments`
-- Enums de domínio:
-  - `EmployeeStatus`
-  - `VacationRequestStatus`
-- Relacionamentos Eloquent e casts aplicados
-- Factories e seeder base para dados de desenvolvimento
-- Teste de schema e relacionamentos do domínio
+## Ponto de atenção (decisão de negócio)
 
-## Decisão importante: saldo manual editável
+Você escolheu **saldo editável manualmente**. Isso pode atender o legado da planilha, mas exige governança para não virar inconsistência de dados.
 
-Saldo manual **só é aceitável com trilha de auditoria forte**. Este projeto já cria base para isso com `vacation_balance_adjustments`.
+Mínimo recomendado:
 
-Mínimo obrigatório nas próximas entregas:
+- ajuste somente por perfis autorizados;
+- registro obrigatório de motivo;
+- log imutável de ajuste (`before`, `after`, `delta`, `actor`, `timestamp`);
+- exibição clara de "saldo calculado" x "saldo ajustado" na UI.
 
-1. Ajuste de saldo via Action dedicada (nunca update direto em controller)
-2. Policy para limitar quem ajusta saldo
-3. Motivo obrigatório e histórico imutável
-4. Tela mostrando saldo atual + histórico de ajustes
-
-## Próximos passos (EPIC 3)
-
-- CRUD de colaboradores com filtros por departamento e status
-- Form Requests para create/update
-- Action `AdjustEmployeeVacationBalanceAction`
-- Testes de autorização e trilha de ajuste
+Sem isso, o custo de suporte tende a crescer rápido.
