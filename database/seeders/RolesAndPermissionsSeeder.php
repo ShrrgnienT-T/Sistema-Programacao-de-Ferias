@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use RuntimeException;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -11,6 +12,12 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
+        if (! class_exists(PermissionRegistrar::class)) {
+            throw new RuntimeException(
+                'Package spatie/laravel-permission is not available. Run "composer install" and then "php artisan package:discover".'
+            );
+        }
+
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permissions = [
