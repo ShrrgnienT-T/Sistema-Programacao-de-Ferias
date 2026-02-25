@@ -52,6 +52,14 @@
                                     <p>Dashboard</p>
                                 </a>
                             </li>
+                            @can('employees.view')
+                                <li class="nav-item">
+                                    <a href="{{ route('employees.index') }}" class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
+                                        <i class="nav-icon fas fa-users"></i>
+                                        <p>Colaboradores</p>
+                                    </a>
+                                </li>
+                            @endcan
                             <li class="nav-item">
                                 <a href="{{ route('profile.edit') }}" class="nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
                                     <i class="nav-icon fas fa-id-card"></i>
