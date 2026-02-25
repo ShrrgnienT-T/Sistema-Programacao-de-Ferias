@@ -7,18 +7,13 @@
 
         <title>{{ $title ?? config('app.name', 'Sistema de Programação de Férias') }}</title>
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="hold-transition sidebar-mini layout-fixed">
-        <div class="wrapper">
-            <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-                    </li>
-                </ul>
+    <body>
+        <div class="app">
+            @include('partials.morhena.header')
 
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
@@ -73,23 +68,13 @@
 
             <div class="content-wrapper bg-gray-50">
                 @isset($header)
-                    <section class="content-header pb-0">
-                        <div class="container-fluid">
-                            {{ $header }}
-                        </div>
+                    <section class="mb-4">
+                        {{ $header }}
                     </section>
                 @endisset
 
-                <section class="content pt-3">
-                    <div class="container-fluid">
-                        {{ $slot }}
-                    </div>
-                </section>
-            </div>
+                {{ $slot }}
+            </main>
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
     </body>
 </html>
