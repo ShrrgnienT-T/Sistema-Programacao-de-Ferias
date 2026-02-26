@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DepartmentShift;
 use App\Enums\EmployeeJobTitle;
 use App\Enums\EmployeeStatus;
 use App\Http\Requests\StoreEmployeeRequest;
@@ -35,7 +36,7 @@ class EmployeeController extends Controller
 
         return view('employees.index', [
             'employees' => $employees,
-            'departments' => Department::query()->orderBy('name')->get(),
+            'departments' => $this->availableDepartments(),
             'statuses' => EmployeeStatus::cases(),
             'jobTitles' => EmployeeJobTitle::values(),
         ]);
@@ -47,7 +48,7 @@ class EmployeeController extends Controller
 
         return view('employees.create', [
             'employee' => new Employee,
-            'departments' => Department::query()->orderBy('name')->get(),
+            'departments' => $this->availableDepartments(),
             'statuses' => EmployeeStatus::cases(),
             'jobTitles' => EmployeeJobTitle::values(),
         ]);
@@ -79,7 +80,7 @@ class EmployeeController extends Controller
 
         return view('employees.edit', [
             'employee' => $employee,
-            'departments' => Department::query()->orderBy('name')->get(),
+            'departments' => $this->availableDepartments(),
             'statuses' => EmployeeStatus::cases(),
             'jobTitles' => EmployeeJobTitle::values(),
         ]);
@@ -97,5 +98,14 @@ class EmployeeController extends Controller
     private function ensurePermission(Request $request, string $permission): void
     {
         abort_unless($request->user()?->can($permission), 403);
+    }
+
+    private function availableDepartments()
+    {
+        foreach (DepartmentShift::values() as $departmentName) {
+            Department::query()->firstOrCreate(['name' => $departmentName]);
+        }
+
+        return Department::query()->orderBy('name')->get();
     }
 }
