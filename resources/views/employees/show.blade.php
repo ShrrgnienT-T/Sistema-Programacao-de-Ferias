@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
-            <h1 class="m-0">{{ $employee->name }}</h1>
+            <h1 class="m-0 section-title">{{ $employee->name }}</h1>
             @can('employees.update')
                 <a href="{{ route('employees.edit', $employee) }}" class="btn btn-primary">Editar</a>
             @endcan
@@ -9,7 +9,7 @@
     </x-slot>
 
     <x-ui.card>
-        <dl class="row mb-0">
+        <dl class="row mb-0 details-list">
             <dt class="col-sm-3">Departamento</dt>
             <dd class="col-sm-9">{{ $employee->department->name }}</dd>
 

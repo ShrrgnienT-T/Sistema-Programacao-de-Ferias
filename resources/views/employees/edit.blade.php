@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="m-0">Editar colaborador</h1>
+        <h1 class="m-0 section-title">Editar colaborador</h1>
     </x-slot>
 
     <x-ui.card>
