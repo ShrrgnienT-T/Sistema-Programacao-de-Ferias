@@ -3,11 +3,11 @@
 @php
     $variants = [
         'primary' => 'btn-primary',
-        'secondary' => 'btn-secondary',
-        'success' => 'btn-success',
+        'secondary' => 'btn-light',
+        'success' => 'btn-primary',
         'danger' => 'btn-danger',
-        'warning' => 'btn-warning',
-        'outline-primary' => 'btn-outline-primary',
+        'warning' => 'btn-light',
+        'outline-primary' => 'btn-light',
     ];
 @endphp
 
