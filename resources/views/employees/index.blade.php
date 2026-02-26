@@ -56,10 +56,15 @@
                             </x-ui.badge>
                         </td>
                         <td class="text-end">
-                            <a href="{{ route('employees.show', $employee) }}" class="btn btn-sm btn-light">Ver</a>
-                            @can('employees.update')
-                                <a href="{{ route('employees.edit', $employee) }}" class="btn btn-sm btn-primary">Editar</a>
-                            @endcan
+                            <div class="d-flex gap-1 justify-content-end">
+                                <a href="{{ route('employees.show', $employee) }}" class="btn btn-sm btn-light">Ver</a>
+                                @can('employees.update')
+                                    <a href="{{ route('employees.edit', $employee) }}" class="btn btn-sm btn-primary">Editar</a>
+                                @endcan
+                                @can('employees.delete')
+                                    <x-btn-delete :route="route('employees.destroy', $employee)" />
+                                @endcan
+                            </div>
                         </td>
                     </tr>
                 @empty

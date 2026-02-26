@@ -2,9 +2,14 @@
     <x-slot name="header">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="m-0 section-title">{{ $employee->name }}</h1>
-            @can('employees.update')
-                <a href="{{ route('employees.edit', $employee) }}" class="btn btn-primary">Editar</a>
-            @endcan
+            <div class="d-flex gap-2">
+                @can('employees.update')
+                    <a href="{{ route('employees.edit', $employee) }}" class="btn btn-primary">Editar</a>
+                @endcan
+                @can('employees.delete')
+                    <x-btn-delete :route="route('employees.destroy', $employee)">Excluir</x-btn-delete>
+                @endcan
+            </div>
         </div>
     </x-slot>
 

@@ -14,6 +14,7 @@
         @php($dashboardData = [
             'rows' => $rows,
             'kpis' => $kpis,
+            'departments' => $departments,
             'planningMonths' => $planningMonths,
             'planningStatuses' => $planningStatuses,
             'departmentShifts' => $departmentShifts,

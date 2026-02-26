@@ -11,43 +11,44 @@ trait FilterTrait
 {
     /**
      * Lista de colunas que devem usar pesquisa exata.
-     *
-     * @var array<int, string>
+     * Sobrescreva esta propriedade no controller se necessário.
      */
-    protected array $exactMatchFields = [
-        'plate_number',
-        'lumberLog_picking_list',
-    ];
+    protected function getExactMatchFields(): array
+    {
+        return property_exists($this, 'exactMatchFields') ? $this->exactMatchFields : [];
+    }
 
     /**
      * Alias de chaves de filtro para colunas reais.
-     * Ex.: ['responsible_doctor_id' => 'responsible']
-     *
-     * @var array<string, string>
      */
-    protected array $filterAliases = [];
+    protected function getFilterAliases(): array
+    {
+        return property_exists($this, 'filterAliases') ? $this->filterAliases : [];
+    }
 
     /**
      * Colunas de data que aceitam filtros *_start e *_end.
-     * Ex.: ['entry_date']
-     *
-     * @var array<int, string>
      */
-    protected array $rangeDateFields = [];
+    protected function getRangeDateFields(): array
+    {
+        return property_exists($this, 'rangeDateFields') ? $this->rangeDateFields : [];
+    }
 
     /**
      * Colunas do model usadas na busca global via ?search=
-     *
-     * @var array<int, string>
      */
-    protected array $searchableColumns = [];
+    protected function getSearchableColumns(): array
+    {
+        return property_exists($this, 'searchableColumns') ? $this->searchableColumns : [];
+    }
 
     /**
      * Relações/colunas usadas na busca global via ?search= no formato relation.column
-     *
-     * @var array<int, string>
      */
-    protected array $searchableRelations = [];
+    protected function getSearchableRelations(): array
+    {
+        return property_exists($this, 'searchableRelations') ? $this->searchableRelations : [];
+    }
 
     protected function filter(Builder $query, Request $request): void
     {
@@ -74,7 +75,7 @@ trait FilterTrait
                 [$relation, $field] = explode('.', $key, 2);
 
                 $query->whereHas($relation, function (Builder $subQuery) use ($field, $value) {
-                    if (in_array($field, $this->exactMatchFields, true)) {
+                    if (in_array($field, $this->getExactMatchFields(), true)) {
                         $subQuery->where($field, '=', $value);
                     } else {
                         $subQuery->where($field, 'like', '%'.$value.'%');
@@ -179,7 +180,7 @@ trait FilterTrait
 
     protected function applyColumnFilter(Builder $query, string $column, string $value): void
     {
-        if (in_array($column, $this->exactMatchFields, true)) {
+        if (in_array($column, $this->getExactMatchFields(), true)) {
             $query->where($column, '=', $value);
         } else {
             $query->where($column, 'like', "%{$value}%");
@@ -192,7 +193,7 @@ trait FilterTrait
             if ($this->isDateColumn($subQuery, $relationKey)) {
                 $this->handleDateFilter($subQuery, $relationKey, $value);
             } elseif ($this->columnExists($subQuery, $relationKey)) {
-                if (in_array($relationKey, $this->exactMatchFields, true)) {
+                if (in_array($relationKey, $this->getExactMatchFields(), true)) {
                     $subQuery->where($relationKey, '=', $value);
                 } else {
                     $subQuery->where($relationKey, 'like', "%{$value}%");
@@ -203,7 +204,8 @@ trait FilterTrait
 
     private function normalizeFilterKey(string $key): string
     {
-        return $this->filterAliases[$key] ?? $key;
+        $aliases = $this->getFilterAliases();
+        return $aliases[$key] ?? $key;
     }
 
     private function isRangeDateFilter(string $key): bool
@@ -216,7 +218,7 @@ trait FilterTrait
         $operator = str_ends_with($key, '_start') ? '>=' : '<=';
         $column = str_replace(['_start', '_end'], '', $key);
 
-        if (! in_array($column, $this->rangeDateFields, true)) {
+        if (! in_array($column, $this->getRangeDateFields(), true)) {
             return;
         }
 
@@ -236,24 +238,28 @@ trait FilterTrait
             return;
         }
 
-        if ($this->searchableColumns === [] && $this->searchableRelations === []) {
+        $searchableColumns = $this->getSearchableColumns();
+        $searchableRelations = $this->getSearchableRelations();
+        $exactMatchFields = $this->getExactMatchFields();
+
+        if ($searchableColumns === [] && $searchableRelations === []) {
             return;
         }
 
-        $query->where(function (Builder $searchQuery) use ($searchValue) {
-            foreach ($this->searchableColumns as $column) {
+        $query->where(function (Builder $searchQuery) use ($searchValue, $searchableColumns, $searchableRelations, $exactMatchFields) {
+            foreach ($searchableColumns as $column) {
                 if (! $this->columnExists($searchQuery, $column)) {
                     continue;
                 }
 
-                if (in_array($column, $this->exactMatchFields, true)) {
+                if (in_array($column, $exactMatchFields, true)) {
                     $searchQuery->orWhere($column, '=', $searchValue);
                 } else {
                     $searchQuery->orWhere($column, 'like', "%{$searchValue}%");
                 }
             }
 
-            foreach ($this->searchableRelations as $relationPath) {
+            foreach ($searchableRelations as $relationPath) {
                 if (! str_contains($relationPath, '.')) {
                     continue;
                 }
@@ -264,8 +270,8 @@ trait FilterTrait
                     continue;
                 }
 
-                $searchQuery->orWhereHas($relation, function (Builder $relationQuery) use ($field, $searchValue) {
-                    if (in_array($field, $this->exactMatchFields, true)) {
+                $searchQuery->orWhereHas($relation, function (Builder $relationQuery) use ($field, $searchValue, $exactMatchFields) {
+                    if (in_array($field, $exactMatchFields, true)) {
                         $relationQuery->where($field, '=', $searchValue);
                     } else {
                         $relationQuery->where($field, 'like', "%{$searchValue}%");

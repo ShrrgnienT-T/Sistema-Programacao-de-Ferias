@@ -13,7 +13,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('employees', EmployeeController::class)->except(['destroy']);
+    Route::resource('employees', EmployeeController::class);
 });
 
 require __DIR__.'/auth.php';

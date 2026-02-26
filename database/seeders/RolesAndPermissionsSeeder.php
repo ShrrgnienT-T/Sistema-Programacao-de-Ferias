@@ -24,6 +24,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'employees.view',
             'employees.create',
             'employees.update',
+            'employees.delete',
             'employees.adjust-balance',
             'vacation-requests.view',
             'vacation-requests.create',

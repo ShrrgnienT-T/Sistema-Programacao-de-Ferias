@@ -25,5 +25,8 @@
                 {{ $slot }}
             </main>
         </div>
+
+        {{-- SweetAlert --}}
+        @include('sweetalert::alert')
     </body>
 </html>

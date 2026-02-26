@@ -7,6 +7,7 @@ use App\Enums\EmployeeJobTitle;
 use App\Enums\EmployeeStatus;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Http\Traits\FilterTrait;
 use App\Models\Department;
 use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
@@ -15,21 +16,19 @@ use Illuminate\View\View;
 
 class EmployeeController extends Controller
 {
+    use FilterTrait;
+
+    protected array $exactMatchFields = ['department_id', 'status'];
+    protected array $searchableColumns = ['name', 'job_title'];
+
     public function index(Request $request): View
     {
         $this->ensurePermission($request, 'employees.view');
 
-        $employees = Employee::query()
-            ->with('department')
-            ->when($request->filled('department_id'), fn ($query) => $query->where('department_id', $request->integer('department_id')))
-            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->string('status')->value()))
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $search = $request->string('search')->value();
-                $query->where(function ($subQuery) use ($search) {
-                    $subQuery->where('name', 'like', "%{$search}%")
-                        ->orWhere('job_title', 'like', "%{$search}%");
-                });
-            })
+        $query = Employee::query()->with('department');
+        $this->filter($query, $request);
+
+        $employees = $query
             ->latest('id')
             ->paginate(10)
             ->withQueryString();
@@ -58,9 +57,9 @@ class EmployeeController extends Controller
     {
         $employee = Employee::create($request->toPayload());
 
-        return redirect()
-            ->route('employees.show', $employee)
-            ->with('status', 'Colaborador criado com sucesso.');
+        toast('Colaborador criado com sucesso!', 'success');
+
+        return redirect()->route('employees.show', $employee);
     }
 
     public function show(Request $request, Employee $employee): View
@@ -90,9 +89,20 @@ class EmployeeController extends Controller
     {
         $employee->update($request->toPayload());
 
-        return redirect()
-            ->route('employees.show', $employee)
-            ->with('status', 'Colaborador atualizado com sucesso.');
+        toast('Colaborador atualizado com sucesso!', 'success');
+
+        return redirect()->route('employees.show', $employee);
+    }
+
+    public function destroy(Request $request, Employee $employee): RedirectResponse
+    {
+        $this->ensurePermission($request, 'employees.delete');
+
+        $employee->delete();
+
+        toast('Colaborador excluído com sucesso!', 'success');
+
+        return redirect()->route('employees.index');
     }
 
     private function ensurePermission(Request $request, string $permission): void
