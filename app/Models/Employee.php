@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Employee extends Model
 {
@@ -46,5 +47,10 @@ class Employee extends Model
     public function vacationBalanceAdjustments(): HasMany
     {
         return $this->hasMany(VacationBalanceAdjustment::class);
+    }
+
+    public function latestVacationRequest(): HasOne
+    {
+        return $this->hasOne(VacationRequest::class)->latestOfMany('starts_at');
     }
 }

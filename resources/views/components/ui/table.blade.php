@@ -1,5 +1,5 @@
-<div class="table-responsive">
-    <table {{ $attributes->class('table table-hover table-striped align-middle') }}>
+<div class="table-wrap">
+    <table {{ $attributes }}>
         {{ $slot }}
     </table>
 </div>
