@@ -53,21 +53,21 @@ function getInitials(name) {
 
 function calculateCycleInfo(admissao) {
     if (!admissao) return null;
-    
+
     const hiredDate = new Date(admissao);
     const today = new Date();
     const currentYear = today.getFullYear();
-    
+
     // Calculate next anniversary
     let nextAniv = new Date(currentYear, hiredDate.getMonth(), hiredDate.getDate());
     if (nextAniv <= today) {
         nextAniv = new Date(currentYear + 1, hiredDate.getMonth(), hiredDate.getDate());
     }
-    
+
     const diffTime = nextAniv - today;
     const daysRemaining = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     const yearsWorked = Math.floor((today - hiredDate) / (1000 * 60 * 60 * 24 * 365.25));
-    
+
     return {
         yearsWorked,
         nextAniv,
@@ -81,11 +81,11 @@ function calculateCycleInfo(admissao) {
 function renderCycleBar(admissao, hasVacation) {
     const info = calculateCycleInfo(admissao);
     if (!info) return '<span class="no-adm">Sem data</span>';
-    
+
     const pct = Math.max(0, Math.min(100, ((365 - info.daysRemaining) / 365) * 100));
     let fillClass = 'ok-fill';
     let txtClass = 'ok-txt';
-    
+
     if (!hasVacation) {
         if (info.isUrgent) {
             fillClass = 'urgent-fill';
@@ -95,7 +95,7 @@ function renderCycleBar(admissao, hasVacation) {
             txtClass = 'warn-txt';
         }
     }
-    
+
     return `
         <span class="ciclo-bar-wrap">
             <span class="ciclo-bar-fill ${fillClass}" style="width:${pct}%"></span>
@@ -116,7 +116,7 @@ export function initMorhenaDashboard() {
 
     const data = JSON.parse(payload.textContent);
     const { rows, kpis, departments = [] } = data;
-    
+
     let currentFilter = '';
     let currentMonth = '';
     let currentDepartment = '';
@@ -160,34 +160,34 @@ export function initMorhenaDashboard() {
         document.getElementById('kpi-pend').textContent = kpis.pending;
         document.getElementById('kpi-empty').textContent = kpis.without_schedule;
         document.getElementById('kpi-alerts').textContent = alertEmployees.length;
-        
+
         const alertCard = document.getElementById('kpi-alerts-card');
         if (alertCard && alertEmployees.length > 0) {
             alertCard.classList.add('has-alerts');
         }
-        
+
         // Segmentation
         const total = kpis.total || 1;
         document.getElementById('seg-aprov').textContent = kpis.approved;
         document.getElementById('seg-anali').textContent = kpis.in_review;
         document.getElementById('seg-pend').textContent = kpis.pending;
-        
+
         const pctAprov = Math.round((kpis.approved / total) * 100);
         const pctAnali = Math.round((kpis.in_review / total) * 100);
         const pctPend = Math.round((kpis.pending / total) * 100);
-        
+
         document.getElementById('seg-bar-aprov').style.width = pctAprov + '%';
         document.getElementById('seg-bar-anali').style.width = pctAnali + '%';
         document.getElementById('seg-bar-pend').style.width = pctPend + '%';
-        
+
         document.getElementById('seg-pct-aprov').textContent = pctAprov + '%';
         document.getElementById('seg-pct-anali').textContent = pctAnali + '%';
         document.getElementById('seg-pct-pend').textContent = pctPend + '%';
-        
+
         // Badges
         const badgeProg = document.getElementById('badge-programacao');
         if (badgeProg) badgeProg.textContent = kpis.total;
-        
+
         const badgeAlerts = document.getElementById('badge-alerts');
         if (badgeAlerts) {
             badgeAlerts.textContent = alertEmployees.length;
@@ -218,7 +218,7 @@ export function initMorhenaDashboard() {
             const avatarBg = getAvatarBg(row.nome);
             const initials = getInitials(row.nome);
             const hasVacation = !!row.di;
-            
+
             return `
                 <tr data-id="${row.id}">
                     <td>${row.id_f}</td>
@@ -256,20 +256,20 @@ export function initMorhenaDashboard() {
     function renderPagination(total, totalPages) {
         const info = document.getElementById('pagination-info');
         const btns = document.getElementById('pagination-btns');
-        
+
         if (info) {
             const start = (currentPage - 1) * perPage + 1;
             const end = Math.min(currentPage * perPage, total);
             info.textContent = `Mostrando ${total > 0 ? start : 0}-${end} de ${total}`;
         }
-        
+
         if (btns) {
             let html = '';
             for (let i = 1; i <= totalPages; i++) {
                 html += `<button class="pg-btn ${i === currentPage ? 'on' : ''}" data-page="${i}">${i}</button>`;
             }
             btns.innerHTML = html;
-            
+
             btns.querySelectorAll('.pg-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     currentPage = parseInt(btn.dataset.page);
@@ -282,7 +282,7 @@ export function initMorhenaDashboard() {
     // Render Calendar
     function renderCalendar() {
         const months = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
-        
+
         document.getElementById('cal-thead').innerHTML = `
             <tr>
                 <th class="col-name">Colaborador</th>
@@ -296,7 +296,7 @@ export function initMorhenaDashboard() {
             const initials = getInitials(row.nome);
             const startMonth = row.di ? Number(row.di.split('-')[1]) - 1 : null;
             const endMonth = row.df ? Number(row.df.split('-')[1]) - 1 : startMonth;
-            
+
             return `
                 <tr>
                     <td class="col-name">
@@ -307,12 +307,12 @@ export function initMorhenaDashboard() {
                     </td>
                     <td class="col-setor">${normalizeDepartment(row.dept)}</td>
                     ${months.map((_, idx) => {
-                        if (startMonth !== null && idx >= startMonth && idx <= (endMonth ?? startMonth)) {
-                            const dias = idx === startMonth ? (row.dias || '') : '';
-                            return `<td><span class="${statusCalClass(row.status)}">${dias ? dias + 'd' : '●'}</span></td>`;
-                        }
-                        return '<td></td>';
-                    }).join('')}
+                if (startMonth !== null && idx >= startMonth && idx <= (endMonth ?? startMonth)) {
+                    const dias = idx === startMonth ? (row.dias || '') : '';
+                    return `<td><span class="${statusCalClass(row.status)}">${dias ? dias + 'd' : '●'}</span></td>`;
+                }
+                return '<td></td>';
+            }).join('')}
                 </tr>
             `;
         }).join('');
@@ -324,26 +324,26 @@ export function initMorhenaDashboard() {
         const cards = document.getElementById('alert-cards');
         const noAlerts = document.getElementById('no-alerts');
         const alertCount = document.getElementById('alert-count');
-        
+
         if (alertCount) alertCount.textContent = alertEmployees.length;
-        
+
         if (alertEmployees.length === 0) {
             if (banner) banner.classList.add('hidden');
             if (cards) cards.classList.add('hidden');
             if (noAlerts) noAlerts.classList.remove('hidden');
             return;
         }
-        
+
         if (banner) banner.classList.remove('hidden');
         if (cards) cards.classList.remove('hidden');
         if (noAlerts) noAlerts.classList.add('hidden');
-        
+
         if (cards) {
             cards.innerHTML = alertEmployees.map(row => {
                 const info = calculateCycleInfo(row.admissao);
                 const isUrgent = info.isUrgent;
                 const pct = Math.min(100, ((365 - info.daysRemaining) / 365) * 100);
-                
+
                 return `
                     <div class="alert-card ${isUrgent ? 'urgent' : ''}">
                         <div class="ac-header">
@@ -370,11 +370,11 @@ export function initMorhenaDashboard() {
     function renderCadastro() {
         const tbody = document.getElementById('cadastro-tbody');
         if (!tbody) return;
-        
+
         tbody.innerHTML = rows.slice(0, 20).map(row => {
             const info = calculateCycleInfo(row.admissao);
             const hasVacation = !!row.di;
-            
+
             return `
                 <tr>
                     <td>${row.id_f}</td>
@@ -428,7 +428,7 @@ export function initMorhenaDashboard() {
         if (monthsCtx) {
             const monthLabels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             const monthCounts = new Array(12).fill(0);
-            
+
             rows.forEach(row => {
                 if (row.di) {
                     const monthIdx = Number(row.di.split('-')[1]) - 1;
@@ -515,13 +515,13 @@ export function initMorhenaDashboard() {
             currentDepartment = '';
             currentSearch = '';
             currentPage = 1;
-            
+
             chips.forEach(c => c.classList.remove('on'));
             root.querySelector('.chip.all')?.classList.add('on');
             if (searchInput) searchInput.value = '';
             if (monthSelect) monthSelect.value = '';
             if (departmentSelect) departmentSelect.value = '';
-            
+
             renderProgramacao();
         });
     }
@@ -530,7 +530,7 @@ export function initMorhenaDashboard() {
     function openModal(employeeId = null) {
         const title = document.getElementById('modal-title');
         if (title) title.textContent = employeeId ? 'Editar Funcionário' : 'Novo Funcionário';
-        
+
         if (employeeId) {
             const emp = rows.find(r => r.id === employeeId);
             if (emp) {
@@ -545,7 +545,7 @@ export function initMorhenaDashboard() {
         } else {
             employeeForm?.reset();
         }
-        
+
         modal?.classList.add('open');
     }
 
@@ -564,7 +564,7 @@ export function initMorhenaDashboard() {
     // Hired date preview
     const hiredInput = document.getElementById('employee-hired');
     const admPreview = document.getElementById('adm-preview');
-    
+
     if (hiredInput && admPreview) {
         hiredInput.addEventListener('change', () => {
             const info = calculateCycleInfo(hiredInput.value);
@@ -572,7 +572,7 @@ export function initMorhenaDashboard() {
                 admPreview.classList.add('show');
                 document.getElementById('adm-ciclo').textContent = `${info.cycleNumber}º ciclo`;
                 document.getElementById('adm-aniv').textContent = info.nextAniv.toLocaleDateString('pt-BR');
-                
+
                 const diasEl = document.getElementById('adm-dias');
                 diasEl.textContent = `${info.daysRemaining} dias`;
                 diasEl.className = 'adm-val ' + (info.isUrgent ? 'c-urgent' : info.isWarning ? 'c-warn' : 'c-ok');
@@ -588,7 +588,7 @@ export function initMorhenaDashboard() {
             e.preventDefault();
             const formData = new FormData(employeeForm);
             const data = Object.fromEntries(formData.entries());
-            
+
             // Here you would send to the API
             console.log('Form data:', data);
             alert('Funcionalidade de salvar será implementada com a API');
@@ -600,12 +600,12 @@ export function initMorhenaDashboard() {
     root.addEventListener('click', (e) => {
         const editBtn = e.target.closest('.btn-edit');
         const delBtn = e.target.closest('.btn-del');
-        
+
         if (editBtn) {
             const id = parseInt(editBtn.dataset.id);
             openModal(id);
         }
-        
+
         if (delBtn) {
             const id = delBtn.dataset.id;
             if (confirm('Tem certeza que deseja excluir este funcionário?')) {
@@ -621,13 +621,13 @@ export function initMorhenaDashboard() {
             const filter = card.dataset.filter;
             currentFilter = filter;
             currentPage = 1;
-            
+
             chips.forEach(c => c.classList.remove('on'));
             root.querySelector(`.chip[data-status="${filter}"]`)?.classList.add('on');
-            
+
             // Switch to programacao tab
             root.querySelector('[data-tab-target="programacao"]')?.click();
-            
+
             renderProgramacao();
         });
     });

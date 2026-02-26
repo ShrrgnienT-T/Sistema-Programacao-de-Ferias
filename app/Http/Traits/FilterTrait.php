@@ -53,7 +53,7 @@ trait FilterTrait
     protected function filter(Builder $query, Request $request): void
     {
         foreach ($request->query() as $key => $value) {
-            if ($key === 'page' || ! $request->filled($key)) {
+            if ($key === 'page' || !$request->filled($key)) {
                 continue;
             }
 
@@ -78,7 +78,7 @@ trait FilterTrait
                     if (in_array($field, $this->getExactMatchFields(), true)) {
                         $subQuery->where($field, '=', $value);
                     } else {
-                        $subQuery->where($field, 'like', '%'.$value.'%');
+                        $subQuery->where($field, 'like', '%' . $value . '%');
                     }
                 });
 
@@ -218,11 +218,11 @@ trait FilterTrait
         $operator = str_ends_with($key, '_start') ? '>=' : '<=';
         $column = str_replace(['_start', '_end'], '', $key);
 
-        if (! in_array($column, $this->getRangeDateFields(), true)) {
+        if (!in_array($column, $this->getRangeDateFields(), true)) {
             return;
         }
 
-        if (! $this->columnExists($query, $column)) {
+        if (!$this->columnExists($query, $column)) {
             return;
         }
 
@@ -248,7 +248,7 @@ trait FilterTrait
 
         $query->where(function (Builder $searchQuery) use ($searchValue, $searchableColumns, $searchableRelations, $exactMatchFields) {
             foreach ($searchableColumns as $column) {
-                if (! $this->columnExists($searchQuery, $column)) {
+                if (!$this->columnExists($searchQuery, $column)) {
                     continue;
                 }
 
@@ -260,13 +260,13 @@ trait FilterTrait
             }
 
             foreach ($searchableRelations as $relationPath) {
-                if (! str_contains($relationPath, '.')) {
+                if (!str_contains($relationPath, '.')) {
                     continue;
                 }
 
                 [$relation, $field] = explode('.', $relationPath, 2);
 
-                if (! method_exists($searchQuery->getModel(), $relation)) {
+                if (!method_exists($searchQuery->getModel(), $relation)) {
                     continue;
                 }
 

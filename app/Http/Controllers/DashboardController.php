@@ -33,7 +33,7 @@ class DashboardController extends Controller
 
             return [
                 'id' => $employee->id,
-                'id_f' => 'F'.str_pad((string) $employee->id, 3, '0', STR_PAD_LEFT),
+                'id_f' => 'F' . str_pad((string) $employee->id, 3, '0', STR_PAD_LEFT),
                 'nome' => $employee->name,
                 're' => '',
                 'cargo' => $employee->job_title?->value ?? $employee->job_title,
