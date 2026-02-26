@@ -1,9 +1,9 @@
 @props(['title' => null])
 
-<div {{ $attributes->class('card shadow-sm border-0') }}>
+<div {{ $attributes->class('table-card') }}>
     @if ($title)
         <div class="card-header">
-            <h3 class="card-title font-semibold">{{ $title }}</h3>
+            <h3 class="card-title">{{ $title }}</h3>
         </div>
     @endif
 
