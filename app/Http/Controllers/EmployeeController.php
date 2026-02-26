@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EmployeeJobTitle;
 use App\Enums\EmployeeStatus;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
@@ -36,6 +37,7 @@ class EmployeeController extends Controller
             'employees' => $employees,
             'departments' => Department::query()->orderBy('name')->get(),
             'statuses' => EmployeeStatus::cases(),
+            'jobTitles' => EmployeeJobTitle::values(),
         ]);
     }
 
@@ -47,6 +49,7 @@ class EmployeeController extends Controller
             'employee' => new Employee,
             'departments' => Department::query()->orderBy('name')->get(),
             'statuses' => EmployeeStatus::cases(),
+            'jobTitles' => EmployeeJobTitle::values(),
         ]);
     }
 
@@ -78,6 +81,7 @@ class EmployeeController extends Controller
             'employee' => $employee,
             'departments' => Department::query()->orderBy('name')->get(),
             'statuses' => EmployeeStatus::cases(),
+            'jobTitles' => EmployeeJobTitle::values(),
         ]);
     }
 

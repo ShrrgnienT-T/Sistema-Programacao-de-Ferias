@@ -14,7 +14,16 @@
     <div class="col-md-6">
         <div class="form-group">
             <label for="job_title">Cargo</label>
-            <input id="job_title" name="job_title" type="text" value="{{ old('job_title', $employee->job_title) }}" class="form-control @error('job_title') is-invalid @enderror" required>
+            @php($selectedJobTitle = old('job_title', $employee->job_title))
+            <select id="job_title" name="job_title" class="form-control @error('job_title') is-invalid @enderror" required>
+                <option value="">Selecione</option>
+                @foreach ($jobTitles as $jobTitle)
+                    <option value="{{ $jobTitle }}" @selected($selectedJobTitle === $jobTitle)>{{ $jobTitle }}</option>
+                @endforeach
+                @if ($selectedJobTitle && ! in_array($selectedJobTitle, $jobTitles, true))
+                    <option value="{{ $selectedJobTitle }}" selected>{{ $selectedJobTitle }}</option>
+                @endif
+            </select>
             @error('job_title')<span class="invalid-feedback">{{ $message }}</span>@enderror
         </div>
     </div>

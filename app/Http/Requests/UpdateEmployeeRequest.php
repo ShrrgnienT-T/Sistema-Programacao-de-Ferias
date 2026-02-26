@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\EmployeeJobTitle;
 use App\Enums\EmployeeStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
@@ -21,7 +22,7 @@ class UpdateEmployeeRequest extends FormRequest
         return [
             'department_id' => ['required', 'integer', 'exists:departments,id'],
             'name' => ['required', 'string', 'max:255'],
-            'job_title' => ['required', 'string', 'max:255'],
+            'job_title' => ['required', new Enum(EmployeeJobTitle::class)],
             'hired_at' => ['required', 'date'],
             'vacation_days_per_year' => ['required', 'integer', 'min:1', 'max:60'],
             'status' => ['required', new Enum(EmployeeStatus::class)],
