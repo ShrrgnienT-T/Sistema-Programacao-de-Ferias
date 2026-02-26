@@ -14,7 +14,7 @@
    <x-ui.card>
       <form method="GET" action="{{ route('employees.index') }}" class="filter-bar mb-3">
          <input id="search" name="search" type="text" value="{{ request('search') }}" class="table-search"
-            placeholder="🔍 Nome ou cargo">
+            placeholder="Nome ou cargo">
 
          <select id="department_id" name="department_id" class="filter-select">
             <option value="">Todos os departamentos</option>

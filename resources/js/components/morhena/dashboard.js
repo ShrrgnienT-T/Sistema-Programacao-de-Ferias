@@ -396,6 +396,12 @@ export function initMorhenaDashboard() {
     function renderCharts() {
         if (typeof Chart === 'undefined') return;
 
+        // Detect theme
+        const isLight = document.documentElement.classList.contains('light-theme');
+        const textColor = isLight ? '#475569' : '#94a3b8';
+        const gridColor = isLight ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.05)';
+        const borderColor = isLight ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.05)';
+
         // Status Doughnut Chart
         const statusCtx = document.getElementById('chart-status');
         if (statusCtx) {
@@ -405,7 +411,9 @@ export function initMorhenaDashboard() {
                     labels: ['Aprovada', 'Em Análise', 'Pendente', 'Reprovada'],
                     datasets: [{
                         data: [kpis.approved, kpis.in_review, kpis.pending, rows.filter(r => r.status === 'Reprovada').length],
-                        backgroundColor: ['rgba(34,211,160,.7)', 'rgba(56,189,248,.7)', 'rgba(251,146,60,.7)', 'rgba(248,113,113,.7)'],
+                        backgroundColor: isLight
+                            ? ['rgba(5,150,105,.7)', 'rgba(2,132,199,.7)', 'rgba(234,88,12,.7)', 'rgba(220,38,38,.7)']
+                            : ['rgba(34,211,160,.7)', 'rgba(56,189,248,.7)', 'rgba(251,146,60,.7)', 'rgba(248,113,113,.7)'],
                         borderWidth: 0,
                         hoverOffset: 6
                     }]
@@ -416,7 +424,7 @@ export function initMorhenaDashboard() {
                         legend: {
                             display: true,
                             position: 'bottom',
-                            labels: { color: '#94a3b8', font: { size: 10 } }
+                            labels: { color: textColor, font: { size: 10 } }
                         }
                     }
                 }
@@ -444,7 +452,7 @@ export function initMorhenaDashboard() {
                         data: monthCounts,
                         backgroundColor: monthCounts.map((_, i) => {
                             const hue = 180 + (i * 15);
-                            return `hsla(${hue}, 70%, 55%, 0.7)`;
+                            return `hsla(${hue}, ${isLight ? '60%' : '70%'}, ${isLight ? '45%' : '55%'}, 0.7)`;
                         }),
                         borderRadius: 4,
                         borderSkipped: false
@@ -453,8 +461,8 @@ export function initMorhenaDashboard() {
                 options: {
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
-                        y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+                        x: { grid: { display: false }, ticks: { color: textColor, font: { size: 9 } } },
+                        y: { grid: { color: gridColor }, ticks: { color: textColor, font: { size: 9 } } }
                     }
                 }
             });
@@ -465,7 +473,7 @@ export function initMorhenaDashboard() {
         if (coverageList) {
             const withCoverage = rows.filter(r => r.cobertura);
             coverageList.innerHTML = withCoverage.slice(0, 5).map(row => `
-                <div style="padding:8px;border-bottom:1px solid rgba(255,255,255,.05);font-size:11px">
+                <div style="padding:8px;border-bottom:1px solid ${borderColor};font-size:11px">
                     <strong style="color:var(--text)">${row.nome}</strong>
                     <div style="color:var(--muted);margin-top:2px">${row.cobertura}</div>
                 </div>

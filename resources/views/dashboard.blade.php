@@ -11,16 +11,16 @@
       @include('dashboard.partials.tab-calendario')
       @include('dashboard.partials.tab-cadastro')
 
-      @php(
-    $dashboardData = [
-        'rows' => $rows,
-        'kpis' => $kpis,
-        'departments' => $departments,
-        'planningMonths' => $planningMonths,
-        'planningStatuses' => $planningStatuses,
-        'departmentShifts' => $departmentShifts,
-    ],
-)
+      @php
+         $dashboardData = [
+             'rows' => $rows,
+             'kpis' => $kpis,
+             'departments' => $departments,
+             'planningMonths' => $planningMonths,
+             'planningStatuses' => $planningStatuses,
+             'departmentShifts' => $departmentShifts,
+         ];
+      @endphp
       <script id="morhena-dashboard-data" type="application/json">@json($dashboardData)</script>
    </div>
 

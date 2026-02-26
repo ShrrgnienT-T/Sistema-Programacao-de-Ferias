@@ -1,55 +1,52 @@
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Delete Account') }}
-        </h2>
+<section>
+   <header class="mb-4">
+      <h2 class="card-title text-danger">Excluir Conta</h2>
+      <p class="card-subtitle">Após a exclusão, todos os seus dados serão permanentemente removidos. Antes de excluir,
+         faça backup de qualquer informação que deseja manter.</p>
+   </header>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
-        </p>
-    </header>
+   <button type="button" class="btn btn-danger"
+      onclick="document.getElementById('modal-delete-account').classList.add('open')">
+      Excluir Conta
+   </button>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
-
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
+   <div class="modal-bg" id="modal-delete-account">
+      <div class="modal">
+         <form method="post" action="{{ route('profile.destroy') }}">
             @csrf
             @method('delete')
 
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
+            <div class="modal-title text-danger">Confirmar Exclusão de Conta</div>
+            <div class="modal-sub">Esta ação não pode ser desfeita</div>
 
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+            <p class="mb-3" style="color: var(--text); font-size: 13px;">
+               Tem certeza que deseja excluir sua conta? Todos os seus dados serão permanentemente removidos.
             </p>
 
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
-
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
+            <div class="form-group">
+               <label for="delete_password">Senha <span class="text-danger">*</span></label>
+               <input id="delete_password" name="password" type="password"
+                  class="form-control @error('password', 'userDeletion') is-invalid @enderror"
+                  placeholder="Digite sua senha para confirmar">
+               @error('password', 'userDeletion')
+                  <span class="invalid-feedback">{{ $message }}</span>
+               @enderror
             </div>
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
+            <div class="d-flex gap-2 mt-4" style="justify-content: flex-end;">
+               <button type="button" class="btn btn-secondary"
+                  onclick="document.getElementById('modal-delete-account').classList.remove('open')">Cancelar</button>
+               <button type="submit" class="btn btn-danger">Excluir Conta</button>
             </div>
-        </form>
-    </x-modal>
+         </form>
+      </div>
+   </div>
 </section>
+
+@if ($errors->userDeletion->isNotEmpty())
+   <script>
+      document.addEventListener('DOMContentLoaded', function() {
+         document.getElementById('modal-delete-account').classList.add('open');
+      });
+   </script>
+@endif

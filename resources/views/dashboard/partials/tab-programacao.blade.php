@@ -18,10 +18,10 @@
       </select>
 
       <select class="filter-select" id="programacao-department">
-         <option value="">🏢 Todos os Departamentos</option>
+         <option value="">Todos os Departamentos</option>
       </select>
 
-      <input class="table-search" id="programacao-search" placeholder="🔍 Buscar colaborador...">
+      <input class="table-search" id="programacao-search" placeholder="Buscar colaborador...">
 
       <span class="filter-count" id="filter-count">0 registros</span>
       <button class="btn-clear" id="btn-clear-filters">✕ Limpar</button>
