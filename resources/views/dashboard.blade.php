@@ -11,7 +11,14 @@
         @include('dashboard.partials.tab-calendario')
         @include('dashboard.partials.tab-cadastro')
 
-        <script id="morhena-dashboard-data" type="application/json">@json(['rows' => $rows, 'kpis' => $kpis])</script>
+        @php($dashboardData = [
+            'rows' => $rows,
+            'kpis' => $kpis,
+            'planningMonths' => $planningMonths,
+            'planningStatuses' => $planningStatuses,
+            'departmentShifts' => $departmentShifts,
+        ])
+        <script id="morhena-dashboard-data" type="application/json">@json($dashboardData)</script>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>

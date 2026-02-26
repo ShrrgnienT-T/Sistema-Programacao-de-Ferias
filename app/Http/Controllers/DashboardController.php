@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DepartmentShift;
+use App\Enums\VacationPlanningMonth;
+use App\Enums\VacationPlanningStatus;
 use App\Enums\VacationRequestStatus;
 use App\Models\Employee;
 use Illuminate\Http\Request;
@@ -45,6 +48,9 @@ class DashboardController extends Controller
         return view('dashboard', [
             'rows' => $rows,
             'kpis' => $this->kpis($rows),
+            'planningMonths' => VacationPlanningMonth::values(),
+            'planningStatuses' => VacationPlanningStatus::values(),
+            'departmentShifts' => DepartmentShift::values(),
         ]);
     }
 

@@ -56,7 +56,10 @@ class DashboardViewTest extends TestCase
             ->assertOk()
             ->assertSee('Controle de Férias — Morhena 2026')
             ->assertSee('Ana Maria')
-            ->assertSee('Aprovada');
+            ->assertSee('Aprovada')
+            ->assertSee('Janeiro')
+            ->assertSee('Diurno Par')
+            ->assertSee('Sem Departamento');
     }
 
     private function userWithPermission(string $permission): User
